@@ -1,0 +1,27 @@
+.thermometer {
+    margin: 20px;
+    padding: 20px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+.thermometer-container {
+    position: relative;
+    width: 50px;
+    height: 200px;
+    border: 2px solid black;
+    background-color: #f2f2f2;
+    margin: 0 auto;
+}
+
+.thermometer-mercury {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-color: red;
+    transition: height 0.5s ease-in-out;
+}
+
+.saved-locations {
+    margin-top: 20px;
+}
