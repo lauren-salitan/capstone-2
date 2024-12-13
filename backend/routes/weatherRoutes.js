@@ -8,9 +8,9 @@ const authenticate = require('../middlewares/authenticate');
 router.get('/weather', async (req, res) => {
   try {
     const { latitude, longitude } = req.query;
-    if (!latitude || !longitude) {
-      return res.status(400).json({ error: 'Latitude and longitude are required' });
-    }
+    if (!latitude || !longitude || isNaN(latitude) || isNaN(longitude)) {
+      return res.status(400).json({ error: 'Invalid coordinates provided' });
+  }
 
     // Call Open-Meteo API to get current weather
     const response = await axios.get(`https://api.open-meteo.com/v1/forecast`, {
@@ -25,8 +25,8 @@ router.get('/weather', async (req, res) => {
     const temperature = response.data.current_weather.temperature;
     res.json({ temperature });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'Failed to fetch weather data' });
+    console.error('Weather API Error:', err);
+    res.status(500).json({ error: 'Failed to fetch weather data', details: err.message });
   }
 });
 

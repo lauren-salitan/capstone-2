@@ -7,12 +7,13 @@ import Thermometer from './components/Thermometer';
 import axios from 'axios';
 
 function App() {
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const [isLoggedIn, setIsLoggedIn] = useState(false); // creates variable, isLoggedIn, and initially sets isLoggedIn to false, creates function, setIsLoggedIn, to update isLoggedIn
+    const [user, setUser] = useState(null);
+
     useEffect(() => {
-        // Check if user is logged in by verifying the token in localStorage
-        const token = localStorage.getItem('token');
+        const token = localStorage.getItem('token'); // Check if user is logged in by verifying the token in localStorage
         if (token) {
-            setIsLoggedIn(true);
+            verifyToken(token);// Verify token validity with backend
         }
     }, []);
 
@@ -38,7 +39,7 @@ function Home({ isLoggedIn }) {
             {isLoggedIn ? (
                 <>
                     <WeatherForm />
-                    <Thermometer />
+                    <Thermometer isLoggedIn={isLoggedIn} />
                 </>
             ) : (
                 <p>Please log in to access all features.</p>

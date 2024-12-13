@@ -27,11 +27,18 @@ router.post("/", async (req, res) => {
 // Register a new user
 router.post('/register', async (req, res) => {
   try {
-      const user = await User.create(req.body);
-      res.status(201).json({ message: 'User registered successfully' });
-    } catch (error) {
-        res.status(400).json({ message: 'Failed to register', error: error.toString() });
-    }
+    const user = await User.create(req.body);
+    
+    // Create token for the new user
+    const token = jwt.sign({ id: user.id }, 'your_jwt_secret', { expiresIn: '24h' });
+    
+    res.status(201).json({ 
+      message: 'User registered successfully',
+      token
+    });
+  } catch (error) {
+    res.status(400).json({ message: 'Failed to register', error: error.toString() });
+  }
 });
 
 // Login user
