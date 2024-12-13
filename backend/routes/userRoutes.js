@@ -4,6 +4,9 @@ const { User } = require("../models");
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 
+// Get JWT secret from environment variables
+const JWT_SECRET = process.env.JWT_SECRET;
+
 // Get all users
 router.get("/", async (req, res) => {
   try {
@@ -24,14 +27,11 @@ router.post("/", async (req, res) => {
   }
 });
 
-// Register a new user
+// Register user
 router.post('/register', async (req, res) => {
   try {
     const user = await User.create(req.body);
-    
-    // Create token for the new user
-    const token = jwt.sign({ id: user.id }, 'your_jwt_secret', { expiresIn: '24h' });
-    
+    const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '24h' });
     res.status(201).json({ 
       message: 'User registered successfully',
       token
@@ -44,14 +44,14 @@ router.post('/register', async (req, res) => {
 // Login user
 router.post('/login', async (req, res) => {
   try {
-      const user = await User.findOne({ where: { username: req.body.username } });
-      if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
-          return res.status(401).send({ message: 'Authentication failed' });
-      }
-      const token = jwt.sign({ id: user.id }, 'your_jwt_secret', { expiresIn: '24h' });
-      res.send({ user, token });
+    const user = await User.findOne({ where: { username: req.body.username } });
+    if (!user || !(await bcrypt.compare(req.body.password, user.password))) {
+      return res.status(401).send({ message: 'Authentication failed' });
+    }
+    const token = jwt.sign({ id: user.id }, JWT_SECRET, { expiresIn: '24h' });
+    res.send({ user, token });
   } catch (error) {
-      res.status(500).send(error);
+    res.status(500).send(error);
   }
 });
 
